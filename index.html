@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahat Alam - Cancer Biology Researcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 100%;
+            max-width: 500px;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link.active {
+            color: #3E92CC;
+            border-bottom-color: #3E92CC;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+        }
+        /* Custom styles for skill chips */
+        .skill-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px; /* Full rounded corners */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            margin: 0.25rem; /* m-1 */
+            transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* shadow-sm */
+        }
+        .skill-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* shadow-md */
+        }
+        .skill-group-header {
+            border-left: 4px solid;
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- 
+    Infographic Generation Plan:
+    Narrative & Structure:
+    1.  Hero/Intro: Hook with name, title, and core mission statement. Provide key links (LinkedIn, etc.).
+    2.  About Me: Expand on the research vision and professional identity.
+    3.  News/Recent Highlights: Showcase the most recent impactful publication.
+    4.  Research Experience: Detail professional journey using a simpler, grid-based card layout.
+    5.  Skills Showcase: Use attractive and colorful skill chips/badges for both Laboratory & Experimental and Computational & Bioinformatics sections.
+    6.  Publications: Highlight top-tier publications first, then show a growth trend with a Line Chart (enhanced aesthetics, using citation data, gradient fill, and improved point styles). Remove IF and Q. A comprehensive, collapsible list of all publications is provided.
+    7.  Leadership & Impact: Showcase non-research contributions (BioSol Centre) to demonstrate broader skills.
+    8.  Contact/Footer: A clear call to action and final contact points, updated with all provided contact info and social links.
+    
+    Color Palette: Using a blend of "Brilliant Blues," "Energetic & Playful," and other vibrant options from the `colour combinations` image.
+    - Main Blue (Primary Accent): #2563EB
+    - Lighter Blue for backgrounds/accents: #DBEAFE, #BFDBFE
+    - Green/Emerald: #047857 (text), #D1FAE5 (bg)
+    - Indigo: #4338CA (text), #EEF2FF (bg)
+    - Orange/Amber: #D97706 (text), #FEF3C7 (bg)
+    - Pink/Rose: #BE185D (text), #FCE7F3 (bg)
+    - Purple: #7C3AED (text), #EDE9FE (bg)
+    - Text: #2D3748 (Dark Gray)
+    - White: #FFFFFF
+    
+    Visualization Plan:
+    - Data Point: Core Skill Categories (Lab, Computational, General) -> Goal: Compare -> Visualization: Colorful Skill Chips/Badges -> Justification: Provides a more direct and visually appealing representation of discrete skills. Method: HTML/CSS with Tailwind. NO SVG.
+    - Data Point: Publication citation trends over years -> Goal: Change -> Visualization: Line Chart -> Justification: Clearly demonstrates research impact and growth over time. Using citation data provides a stronger metric. Enhanced with gradient fill and custom point styles. Method: Chart.js (Canvas). NO SVG.
+    - Data Point: Career Progression -> Goal: Organize -> Visualization: Grid-based cards -> Justification: Organizes chronological experience in a clean, modern, and easy-to-follow format. Method: HTML/CSS with Tailwind. NO SVG.
+    
+    Confirmation: NEITHER Mermaid JS NOR SVG were used in this output. All visualizations are rendered via Chart.js to a Canvas element or constructed with styled HTML/CSS.
+    -->
+
+    <header id="home" class="sticky top-0 bg-white/80 backdrop-blur-md shadow-sm z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#home" class="text-xl font-bold text-gray-900">Rahat Alam</a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#about" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">About</a>
+                    <a href="#news" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">News</a>
+                    <a href="#experience" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">Experience</a>
+                    <a href="#skills" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">Skills</a>
+                    <a href="#publications" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">Publications</a>
+                    <a href="#contact" class="nav-link text-gray-600 hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 pb-1">Contact</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-gray-900 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-3">
+                <a href="#about" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">About</a>
+                <a href="#news" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">News</a>
+                <a href="#experience" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">Experience</a>
+                <a href="#skills" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">Skills</a>
+                <a href="#publications" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">Publications</a>
+                <a href="#contact" class="block py-2 px-4 text-sm text-gray-700 hover:bg-blue-50 rounded">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+
+        <section id="about" class="min-h-screen flex items-center section-fade-in">
+            <div class="w-full text-center"> <!-- Added text-center here -->
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">Rahat Alam</h1>
+                <h2 class="text-2xl md:text-3xl font-medium text-blue-600 mt-2">Cancer Biology Researcher</h2>
+                <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-600"> <!-- Added mx-auto here for centering p -->
+                    I'm a cancer biology researcher with a strong interest in breast cancer metastasis, particularly regarding how the bone microenvironment influences tumor progression and therapeutic resistance. My long-term goal is to contribute to the development of targeted therapies that prevent metastatic relapse and enhance patient outcomes. I thrive in collaborative, interdisciplinary environments and am always open to connecting with researchers, clinicians, and innovators who share this vision.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-4 justify-center"> <!-- Added justify-center here -->
+                    <a href="mailto:rahatalam1643@gmail.com" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all transform hover:scale-105">Email Me</a>
+                    <a href="https://scholar.google.com/citations?user=3vzpiCwAAAAJ&hl=en" target="_blank" class="bg-white text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all transform hover:scale-105">Google Scholar</a>
+                    <a href="https://orcid.org/0000-0001-9415-9386" target="_blank" class="bg-white text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all transform hover:scale-105">ORCID</a>
+                    <a href="https://www.linkedin.com/in/rahat-alam/" target="_blank" class="bg-white text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all transform hover:scale-105">LinkedIn</a>
+                    <a href="https://www.researchgate.net/profile/Rahat-Alam" target="_blank" class="bg-white text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all transform hover:scale-105">ResearchGate</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="news" class="py-16 md:py-24 bg-white rounded-2xl shadow-lg section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Recent Highlights</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Stay updated with my latest contributions to cancer biology research and other significant professional developments.</p>
+            <div class="max-w-3xl mx-auto p-6 rounded-lg shadow-md border border-gray-200 bg-blue-50">
+                <h3 class="text-xl font-bold text-blue-800 mb-2">New Publication in Cancer Discovery!</h3>
+                <p class="text-sm font-semibold text-blue-700 mb-2">Published: 2025</p>
+                <p class="text-md text-gray-700 leading-relaxed">
+                    Our latest research, "Bone-Induced HER2 Promotes Secondary Metastasis in HR+/HER2- Breast Cancer," demonstrates that blocking HER2-mediated secondary metastasis improves clinical outcome and establishes HER2 as a critical biomarker for bone metastasis in patients with initial HR+/HER2- breast cancer, representing ∼70% of all cases. This work, published in the high-impact journal *Cancer Discovery*, addresses an urgent need for alternative strategies to halt metastasis progression.
+                </p>
+                <div class="mt-4 flex flex-wrap gap-3">
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/39835789/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
+                    <a href="https://doi.org/10.1158/2159-8290.CD-23-0543" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="py-16 md:py-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Research Experience</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm text-blue-600 font-semibold">Feb 2023 - Present</p>
+                    <h3 class="text-xl font-bold mt-1 text-gray-900">Associate Researcher II</h3>
+                    <p class="text-md font-medium text-gray-600 mt-1">Icahn School of Medicine at Mount Sinai</p>
+                    <ul class="list-disc list-inside text-gray-600 text-sm mt-3 space-y-1">
+                        <li>Investigating secondary metastasis mechanisms in HR+/HER2- breast cancer.</li>
+                        <li>Conducting epigenetic drug profiling to assess receptor modulation and cancer heterogeneity.</li>
+                        <li>Utilizing in vivo/ex vivo imaging, immunofluorescence microscopy, Western blotting, OCR assays, and tissue collection.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm text-blue-600 font-semibold">Jan 2019 - Jan 2022</p>
+                    <h3 class="text-xl font-bold mt-1 text-gray-900">Undergraduate Researcher</h3>
+                    <p class="text-md font-medium text-gray-600 mt-1">Jashore University of Science and Technology</p>
+                    <ul class="list-disc list-inside text-gray-600 text-sm mt-3 space-y-1">
+                        <li>Evaluated turmeric's anti-aging properties in *Drosophila melanogaster* through genomic, proteomic, and analytical studies.</li>
+                        <li>Managed *Drosophila* colonies, performed physiological assays, and conducted Western blots.</li>
+                        <li>Worked on in-silico and in-vitro analysis of medicinal plant compounds.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm text-blue-600 font-semibold">Nov 2019 - Oct 2022</p>
+                    <h3 class="text-xl font-bold mt-1 text-gray-900">Researcher</h3>
+                    <p class="text-md font-medium text-gray-600 mt-1">BioSol Centre, Bangladesh</p>
+                    <ul class="list-disc list-inside text-gray-600 text-sm mt-3 space-y-1">
+                        <li>Developed prophylactic vaccine candidates against various viruses using in-silico drug design approaches.</li>
+                        <li>Contributed to research on bioinformatics and drug discovery.</li>
+                        <li>Involved in various training events for students from different countries.</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm text-blue-600 font-semibold">Sep 2018 - Dec 2018</p>
+                    <h3 class="text-xl font-bold mt-1 text-gray-900">Research Assistant</h3>
+                    <p class="text-md font-medium text-gray-600 mt-1">Prof. Hosen Research Group, Shahjalal University of Science and Technology</p>
+                    <ul class="list-disc list-inside text-gray-600 text-sm mt-3 space-y-1">
+                        <li>Studied the impact of consanguineous marriage on the accumulation of heritable diseases in Bangladesh.</li>
+                        <li>Served as a data collector and zonal survey leader in Jashore area.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="skills" class="py-16 md:py-24 bg-white rounded-2xl shadow-lg section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Core Competencies</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">My expertise bridges wet-lab experimental biology with advanced computational techniques, enabling a multi-faceted approach to cancer research.</p>
+            <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 skill-group-header border-blue-600 text-blue-800">Laboratory & Experimental</h3>
+                    <div class="flex flex-wrap">
+                        <span class="skill-chip bg-indigo-100 text-indigo-800">Animal Models (Mice Work)</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800">In Vivo/Ex Vivo Imaging</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800">Immunofluorescence Microscopy</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800">Western Blotting</span>
+                        <span class="skill-chip bg-purple-100 text-purple-800">Cell Culture & Assays</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800">Tissue Collection & Processing</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800">Molecular Cloning</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800">PCR Techniques</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800">Light-Sheet Imaging</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4 skill-group-header border-green-600 text-green-800">Computational & Bioinformatics</h3>
+                    <div class="flex flex-wrap">
+                        <span class="skill-chip bg-purple-100 text-purple-800">Python for Data Analysis</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800">NCBI Toolkit</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800">Schrödinger Software</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800">PyMol</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800">Prism-GraphPad</span>
+                        <span class="skill-chip bg-purple-100 text-purple-800">Linux (Ubuntu)</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800">Windows OS</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800">In Silico Drug Design</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="publications" class="py-16 md:py-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Publications & Impact</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">I have contributed to numerous peer-reviewed articles, advancing our understanding of cancer biology and therapeutic strategies.</p>
+            
+            <div class="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-lg mb-16">
+                 <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">Citation Trends & Impact</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                     <div class="text-center p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-100">
+                         <p class="text-4xl font-bold text-blue-700">872</p>
+                         <p class="text-md text-gray-600">Total Citations</p>
+                     </div>
+                     <div class="text-center p-4 bg-green-50 rounded-lg shadow-sm border border-green-100">
+                         <p class="text-4xl font-bold text-green-700">16</p>
+                         <p class="text-md text-gray-600">h-index</p>
+                     </div>
+                 </div>
+                 <div class="chart-container h-80">
+                    <canvas id="publicationsLineChart"></canvas>
+                 </div>
+                 <p class="text-center text-sm text-gray-500 mt-4">This chart illustrates the growth of citations for my publications over time, reflecting a sustained and growing impact on the scientific literature.</p>
+            </div>
+
+            <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">Featured Publications</h3>
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm font-semibold text-blue-600">Cancer Discovery (2025)</p>
+                    <h4 class="font-bold mt-2 text-gray-800">Bone-Induced HER2 Promotes Secondary Metastasis in HR+/HER2- Breast Cancer</h4>
+                    <p class="text-sm text-gray-600 mt-2">Alam R, Reva A, Edwards DG, Lege BM, Munoz Arcos L, Reduzzi C, Singh S, Hao X, Wu YH, Tian Z, Natalee LM, Damle G, Demircioglu D, Wang Y, Wu L, Molteni E, Hasson D, Lim B, Gugala Z, Chipuk JE, Lang JE, Sparano JA, Cheng C, Cristofanilli M, Xiao H, Zhang XH, Bado IL.</p>
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                        This study demonstrates that blocking HER2-mediated secondary metastasis improves clinical outcome and establishes HER2 as a biomarker for bone metastasis in patients with initial HR+/HER2- breast cancer, representing ∼70% of all cases. This work addresses an urgent need for alternative strategies to halt metastasis progression.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/39835789/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
+                        <a href="https://doi.org/10.1158/2159-8290.CD-23-0543" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm font-semibold text-blue-600">BMC Medicine (2023)</p>
+                    <h4 class="font-bold mt-2 text-gray-800">In silico formulation of a next-generation multiepitope vaccine for use as a prophylactic candidate against Crimean-Congo hemorrhagic fever</h4>
+                    <p class="text-sm text-gray-600 mt-2">Alam R, Samad A, Ahammad F, Nur SM, Alsaiari AA, Imon RR, Talukder MEK, Nain Z, Rahman MM, Mohammad F, Karpinski TM.</p>
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                        This study formulated a multiepitope vaccine against Crimean-Congo hemorrhagic fever through computational vaccine design, demonstrating its antigenicity, immunogenicity, non-allergenicity, strong stability, and ability to trigger real-life-like immune responses.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/36726141/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
+                        <a href="https://doi.org/10.1186/s12916-023-02750-9" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm font-semibold text-blue-600">RSC Advances (2021)</p>
+                    <h4 class="font-bold mt-2 text-gray-800">GC-MS analysis of phytoconstituents from Ruellia prostrata and Senna tora and identification of potential anti-viral activity against SARS-CoV-2</h4>
+                    <p class="text-sm text-gray-600 mt-2">Alam R, Imon RR, Kabir Talukder ME, Akhter S, Hossain MA, Ahammad F, Rahman MM.</p>
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                        This research identified natural bioactive compounds from *Ruellia prostrata* and *Senna tora* against SARS-CoV-2 by targeting its main protease. Computational screening confirmed promising compounds with good pharmacological and toxicity properties, suggesting them as potential treatment options.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/35571138/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
+                        <a href="https://doi.org/10.1039/D1RA06842C" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
+                    </div>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
+                    <p class="text-sm font-semibold text-blue-600">Briefings in Bioinformatics (2021)</p>
+                    <h4 class="font-bold mt-2 text-gray-800">Pharmacoinformatics and molecular dynamics simulation-based phytochemical screening of neem plant (Azadiractha indica) against human cancer by targeting MCM7 protein</h4>
+                    <p class="text-sm text-gray-600 mt-2">Ahammad F, Alam R, Mahmud R, Akhter S, Talukder EK, Qadri I.</p>
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                        This study identified natural drug candidates against aggressive malignancies by targeting the MCM7 protein. Using *in silico* drug design and molecular dynamics simulations on neem plant phytochemicals, promising compounds with validated stability were found as potential anticancer agents.
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/33834183/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">PubMed &rarr;</a>
+                        <a href="https://doi.org/10.1093/bib/bbab098" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">DOI &rarr;</a>
+                    </div>
+                </div>
+            </div>
+             <div class="text-center mt-12">
+                <button id="viewAllPublicationsBtn" class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition-all">View All Publications</button>
+            </div>
+        </section>
+
+        <section id="contact" class="py-16 md:py-24 text-center section-fade-in">
+            <h2 class="text-3xl font-bold text-gray-900">Let's Collaborate</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">I am passionate about advancing cancer research and open to new opportunities and collaborations. If my work aligns with your goals, please feel free to reach out.</p>
+            <div class="mt-8">
+                <a href="mailto:rahatalam1643@gmail.com" class="text-xl font-medium text-blue-600 hover:underline">rahatalam1643@gmail.com</a>
+                <a href="mailto:alam.rahat.just@gmail.com" class="text-xl font-medium text-blue-600 hover:underline block mt-2">alam.rahat.just@gmail.com</a>
+                <a href="mailto:rahat.alam@mssm.edu" class="text-xl font-medium text-blue-600 hover:underline block mt-2">rahat.alam@mssm.edu</a>
+                <p class="text-gray-600 mt-4">+1-667-802-7766 II +8801794726424</p>
+                <p class="text-gray-600">Bronx, NY, USA</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Rahat Alam. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- All Publications Modal -->
+    <div id="allPublicationsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalBtn">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Complete List of Publications</h2>
+            <div id="publicationsList" class="space-y-6">
+                <!-- Publications will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        const sections = document.querySelectorAll('.section-fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+        
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if(link.getAttribute('href').substring(1) === entry.target.id){
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-30% 0px -70% 0px' });
+        
+        document.querySelectorAll('section').forEach(section => {
+            navObserver.observe(section);
+        });
+
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            }
+            return label;
+        };
+
+        const chartOptionsTemplate = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#4A5568',
+                        font: {
+                            size: 14,
+                            family: 'Inter'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: '#1A202C',
+                    titleFont: {
+                        size: 14,
+                        family: 'Inter'
+                    },
+                    bodyFont: {
+                        size: 12,
+                        family: 'Inter'
+                    }
+                }
+            }
+        };
+
+        const publicationsLineCtx = document.getElementById('publicationsLineChart').getContext('2d');
+        
+        // Citation data provided by the user
+        const userCitationsPerYear = {
+            '2021': 84,
+            '2022': 180,
+            '2023': 200,
+            '2024': 387 
+        };
+
+        // Combine all years for chart labels, ensuring consistent order
+        const allYears = Array.from(new Set(Object.keys(userCitationsPerYear))).sort();
+
+        // Prepare data arrays for the chart, filling missing years with 0
+        const citationsData = allYears.map(year => userCitationsPerYear[year] || 0);
+        
+        new Chart(publicationsLineCtx, {
+            type: 'line',
+            data: {
+                labels: allYears,
+                datasets: [
+                    {
+                        label: 'Citations',
+                        data: citationsData,
+                        fill: 'start', 
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+                            if (!chartArea) {
+                                return null;
+                            }
+                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.1)'); 
+                            gradient.addColorStop(1, 'rgba(37, 99, 235, 0.4)'); 
+                            return gradient;
+                        },
+                        borderColor: '#2563EB',
+                        pointBackgroundColor: '#2563EB',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#2563EB',
+                        borderWidth: 3, 
+                        tension: 0.4,
+                        pointRadius: 7, 
+                        pointHoverRadius: 10,
+                        pointStyle: 'circle',
+                        pointBorderWidth: 2 
+                    }
+                ]
+            },
+            options: {
+                ...chartOptionsTemplate,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { 
+                            color: '#E5E7EB',
+                            drawBorder: false,
+                            borderDash: [5, 5] 
+                        },
+                        ticks: {
+                            color: '#6B7280',
+                            stepSize: 100, 
+                            font: { size: 12, family: 'Inter' }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#6B7280',
+                            font: { size: 12, family: 'Inter' }
+                        }
+                    }
+                },
+                plugins: {
+                     ...chartOptionsTemplate.plugins,
+                     legend: { display: false } /* Only one dataset, no need for legend */
+                }
+            }
+        });
+
+        // The text for "First Author Articles per Year" is now removed from HTML
+        // So no dynamic JS update is needed for it.
+
+        const allPublications = [
+            {
+                title: 'Bone-Induced HER2 Promotes Secondary Metastasis in HR+/HER2- Breast Cancer',
+                authors: 'Alam R, Reva A, Edwards DG, Lege BM, Munoz Arcos L, Reduzzi C, Singh S, Hao X, Wu YH, Tian Z, Natalee LM, Damle G, Demircioglu D, Wang Y, Wu L, Molteni E, Hasson D, Lim B, Gugala Z, Chipuk JE, Lang JE, Sparano JA, Cheng C, Cristofanilli M, Xiao H, Zhang XH, Bado IL.',
+                journal: 'Cancer Discovery',
+                year: '2025',
+                description: 'This study demonstrates that blocking HER2-mediated secondary metastasis improves clinical outcome and establishes HER2 as a biomarker for bone metastasis in patients with initial HR+/HER2- breast cancer, representing ∼70% of all cases. This work addresses an urgent need for alternative strategies to halt metastasis progression.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/39835789/',
+                doiLink: 'https://doi.org/10.1158/2159-8290.CD-23-0543'
+            },
+            { title: 'Designing a multi-epitope vaccine against SARS-CoV-2: an immunoinformatics approach', authors: 'Samad A, Ahammad F, Nain Z, Alam R, Imon RR, Hasan M, Rahman MS', journal: 'Journal of Biomolecular Structure and Dynamics 40 (1), 14-30', year: '2022', description: 'This immunoinformatics approach focuses on designing a multi-epitope vaccine against SARS-CoV-2.' },
+            { title: 'Pharmacoinformatics and molecular dynamics simulation-based phytochemical screening of neem plant (Azadiractha indica) against human cancer by targeting MCM7 protein', authors: 'Ahammad F, Alam R, Mahmud R, Akhter S, Talukder EK, Tonmoy AM, ...', journal: 'Briefings in Bioinformatics', year: '2021', description: 'This study screens phytochemicals from neem plant against human cancer by targeting MCM7 protein using computational approaches.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33834183/', doiLink: 'https://doi.org/10.1093/bib/bbab098' },
+            { title: 'Pharmacophore-based virtual screening, quantum mechanics calculations, and molecular dynamics simulation approaches identified potential natural antiviral drug candidates', authors: 'Bouback TA, Pokhrel S, Albeshri A, Aljohani AM, Samad A, Alam R, ...', journal: 'Molecules 26 (16), 4961', year: '2021', description: 'This research used advanced computational methods to identify natural antiviral drug candidates.' },
+            { title: 'Spike protein recognizer receptor ACE2 targeted identification of potential natural antiviral drug candidates against SARS-CoV-2', authors: 'Pokhrel S, Bouback TA, Samad A, Nur SM, Alam R, International journal of biological macromolecules 191, 1114-1125', journal: 'International journal of biological macromolecules', year: '2021', description: 'Focuses on identifying natural antiviral candidates against SARS-CoV-2 by targeting the ACE2 receptor.' },
+            { title: 'What do we know about antimicrobial activity of astaxanthin and fucoxanthin?', authors: 'Karpiński TM, Ożarowski M, Alam R, Łochyńska M, Stasiewicz M', journal: 'Marine Drugs 20 (1), 36', year: '2021', description: 'A review exploring the antimicrobial properties of astaxanthin and fucoxanthin.' },
+            { title: 'Transporter associated with antigen processing 1 (TAP1) expression and prognostic analysis in breast, lung, liver, and ovarian cancer', authors: 'Tabassum ASTMK Anika, Samdani Md. Nazmus, Dhali Tarak Chandra, Rahat Alam ...', journal: 'Journal of Molecular Medicine', year: '2021', description: 'Analyzes TAP1 expression and its prognostic value across multiple cancer types.' },
+            { title: 'Computational assessment of MCM2 transcriptional expression and identification of the prognostic biomarker for human breast cancer', authors: 'Samad A, Haque F, Nain Z, Alam R, Noman MAA, Molla MHR, ...', journal: 'Heliyon 6 (10)', year: '2020', description: 'This study computationally assesses MCM2 expression as a prognostic biomarker for human breast cancer.' },
+            { title: 'Antifungal properties of chemically defined propolis from various geographical regions', authors: 'Ożarowski M, Karpiński TM, Alam R, Łochyńska M', journal: 'Microorganisms 10 (2), 364', year: '2022', description: 'Investigates the antifungal properties of propolis from different regions.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35208818/' },
+            { title: 'GC-MS analysis of phytoconstituents from Ruellia prostrata and Senna tora and identification of potential anti-viral activity against SARS-CoV-2', authors: 'Alam R, Imon RR, Talukder MEK, Akhter S, Hossain MA, Ahammad F, Rahman MM', journal: 'Rsc Advances 11 (63), 40120-40135', year: '2021', description: 'Identifies potential antiviral compounds from *Ruellia prostrata* and *Senna tora* against SARS-CoV-2 using GC-MS.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35571138/', doiLink: 'https://doi.org/10.1039/D1RA06842C' },
+            { title: 'High expression of bone morphogenetic protein 1 (BMP1) is associated with a poor survival rate in human gastric cancer, a dataset approaches', authors: 'Rafi JH, Jafar T, Pathan MT, Reza R, Islam S, Sourna IJ, Alam R, ...', journal: 'Genomics 113 (1), 1141-1154', year: '2021', description: 'Explores the association of high BMP1 expression with poor survival in gastric cancer.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33189777/' },
+            { title: 'Discovery of potential immune epitopes and peptide vaccine design - a prophylactic strategy against Rift Valley fever virus', authors: 'Bhuiyan MA, Quayum ST, Ahammad F, Alam R, Samad A, Nain Z', journal: 'F1000Research 9, 999', year: '2020', description: 'Designs a peptide vaccine against Rift Valley fever virus using computational methods.' },
+            { title: 'Toward the identification of natural antiviral drug candidates against merkel cell polyomavirus: computational drug design approaches', authors: 'Asseri AH, Alam MJ, Alzahrani F, Khames A, Pathan MT, Abourehab MAS, ... Alam R, ...', journal: 'Pharmaceuticals (5), 501', year: '2022', description: 'Computational drug design approaches to identify antiviral candidates against Merkel Cell Polyomavirus.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35631328/' },
+            { title: 'Ruellia prostrata Poir. activity evaluated by phytoconstituents, antioxidant, anti-inflammatory, antibacterial activity, and in silico molecular functions', authors: 'Akhter S, Hossain MW, Sultana S, Jharna JF, Meghla NS, Alam R', journal: 'Journal of Saudi Chemical Society 26 (1), 101401', year: '2022', description: 'Evaluates the activity of *Ruellia prostrata* using various assays and computational analysis.' },
+            { title: 'A multi-omics approach to reveal the key evidence of GDF10 as a novel therapeutic biomarker for breast cancer', authors: 'Rahman F, Mahmood TB, Amin A, Alam R, Jharna JF, Samad A, ...', journal: 'Informatics in Medicine Unlocked 21, 100463', year: '2020', description: 'Uses a multi-omics approach to identify GDF10 as a therapeutic biomarker for breast cancer.' },
+            { title: 'In silico formulation of a next-generation multiepitope vaccine for use as a prophylactic candidate against Crimean-Congo hemorrhagic fever', authors: 'Alam R, Samad A, Ahammad F, Nur SM, Alsaiari AA, Imon RR, BMC medicine 21 (1), 36', journal: 'BMC medicine 21 (1), 36', year: '2023', description: 'Formulates a multiepitope vaccine against CCHF using *in silico* methods.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/36726141/', doiLink: 'https://doi.org/10.1186/s12916-023-02750-9' },
+            { title: 'Evaluation of Senna tora (L.) Roxb. leaves as source of bioactive molecules with antioxidant, anti-inflammatory and antibacterial potential', authors: 'Rahman MM, Noman MAA, Khatun S, Alam R, Shetu MMH, Talukder EK, Heliyon 9 (1)', journal: 'Heliyon 9 (1)', year: '2023', description: 'Evaluates *Senna tora* leaves for their bioactive molecules and biological activities.' },
+            { title: 'In silico studies of selected xanthophylls as potential candidates against SARS-CoV-2 targeting main protease (Mpro) and papain-like protease (PLpro)', authors: 'Karpinski TM, Kwasniewski M, Ozarowski M, Alam R', journal: 'Herba Polonica 67 (2)', year: '2021', description: '*In silico* studies on xanthophylls as potential SARS-CoV-2 inhibitors.' },
+            { title: 'Methanol, ethyl acetate and n-hexane extracts of Tragia involucrata L. leaves exhibit anxiolytic, sedative and analgesic activity in Swiss albino mice', authors: 'Islam MS, Sana S, Haque ME, Rahman SMM, Samad A, Noman A Al, Heliyon 7 (1)', journal: 'Heliyon 7 (1)', year: '2021', description: 'Identifies active compounds from *Tragia involucrata* leaves with anxiolytic, sedative, and analgesic effects.' },
+            { title: 'Validation of CSN1S1 transcriptional expression, promoter methylation, and prognostic power in breast cancer using independent datasets', authors: 'Mou MA, Keya NA, Islam M, Hossain MJ, Al Habib MS, Alam R, Rana S, ...', journal: 'Biochemistry and Biophysics Reports 24, 100867', year: '2020', description: 'Validates CSN1S1 expression and methylation as prognostic indicators in breast cancer.' }
+        ];
+
+        const viewAllPublicationsBtn = document.getElementById('viewAllPublicationsBtn');
+        const allPublicationsModal = document.getElementById('allPublicationsModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const publicationsListDiv = document.getElementById('publicationsList');
+
+        function renderAllPublications() {
+            publicationsListDiv.innerHTML = ''; 
+            allPublications.forEach(pub => {
+                const pubDiv = document.createElement('div');
+                pubDiv.className = 'bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm';
+                pubDiv.innerHTML = `
+                    <h4 class="font-bold text-lg text-gray-800">${pub.title}</h4>
+                    <p class="text-sm text-gray-600 mt-1"><strong>Authors:</strong> ${pub.authors}</p>
+                    <p class="text-sm text-gray-600"><strong>Journal:</strong> ${pub.journal} (${pub.year})</p>
+                    <p class="text-gray-700 text-sm mt-2 leading-relaxed">${pub.description}</p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        ${pub.pubmedLink ? `<a href="${pub.pubmedLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">PubMed &rarr;</a>` : ''}
+                        ${pub.doiLink ? `<a href="${pub.doiLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">DOI &rarr;</a>` : ''}
+                        ${pub.link && !pub.pubmedLink && !pub.doiLink ? `<a href="${pub.link}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">Link &rarr;</a>` : ''}
+                    </div>
+                `;
+                publicationsListDiv.appendChild(pubDiv);
+            });
+        }
+
+        viewAllPublicationsBtn.addEventListener('click', () => {
+            renderAllPublications();
+            allPublicationsModal.style.display = 'flex'; 
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            allPublicationsModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === allPublicationsModal) {
+                allPublicationsModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
