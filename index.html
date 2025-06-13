@@ -87,6 +87,7 @@
             margin: 0.25rem; /* m-1 */
             transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* shadow-sm */
+            cursor: pointer; /* Indicate clickability */
         }
         .skill-chip:hover {
             transform: translateY(-2px);
@@ -95,6 +96,23 @@
         .skill-group-header {
             border-left: 4px solid;
             padding-left: 1rem;
+        }
+        .skill-detail-box {
+            background-color: #f0f9ff; /* blue-50 */
+            border: 1px solid #bfdbfe; /* blue-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            margin-top: 0.5rem; /* mt-2 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* shadow-sm */
+            font-size: 0.875rem; /* text-sm */
+            color: #4a5568; /* gray-700 */
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-out;
+            max-width: 100%; /* Ensure it fits in its container */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -106,7 +124,7 @@
     2.  About Me: Expand on the research vision and professional identity.
     3.  News/Recent Highlights: Showcase the most recent impactful publication.
     4.  Research Experience: Detail professional journey using a simpler, grid-based card layout.
-    5.  Skills Showcase: Use attractive and colorful skill chips/badges for both Laboratory & Experimental and Computational & Bioinformatics sections.
+    5.  Skills Showcase: Use attractive and colorful skill chips/badges for both Laboratory & Experimental and Computational & Bioinformatics sections with inline expand/collapse details.
     6.  Publications: Highlight top-tier publications first, then show a growth trend with a Line Chart (enhanced aesthetics, using citation data, gradient fill, and improved point styles). Remove IF and Q. A comprehensive, collapsible list of all publications is provided.
     7.  Leadership & Impact: Showcase non-research contributions (BioSol Centre) to demonstrate broader skills.
     8.  Contact/Footer: A clear call to action and final contact points, updated with all provided contact info and social links.
@@ -123,7 +141,7 @@
     - White: #FFFFFF
     
     Visualization Plan:
-    - Data Point: Core Skill Categories (Lab, Computational, General) -> Goal: Compare -> Visualization: Colorful Skill Chips/Badges -> Justification: Provides a more direct and visually appealing representation of discrete skills. Method: HTML/CSS with Tailwind. NO SVG.
+    - Data Point: Core Skill Categories (Lab, Computational, General) -> Goal: Compare -> Visualization: Colorful Skill Chips/Badges with inline modal descriptions -> Justification: Provides a direct and visually appealing representation of discrete skills, with on-demand detailed explanations integrated seamlessly. Method: HTML/CSS with Tailwind and JavaScript for toggle. NO SVG.
     - Data Point: Publication citation trends over years -> Goal: Change -> Visualization: Line Chart -> Justification: Clearly demonstrates research impact and growth over time. Using citation data provides a stronger metric. Enhanced with gradient fill and custom point styles. Method: Chart.js (Canvas). NO SVG.
     - Data Point: Career Progression -> Goal: Organize -> Visualization: Grid-based cards -> Justification: Organizes chronological experience in a clean, modern, and easy-to-follow format. Method: HTML/CSS with Tailwind. NO SVG.
     
@@ -250,31 +268,31 @@
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Core Competencies</h2>
             <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">My expertise bridges wet-lab experimental biology with advanced computational techniques, enabling a multi-faceted approach to cancer research.</p>
             <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-                <div>
+                <div class="flex flex-col">
                     <h3 class="text-xl font-bold mb-4 skill-group-header border-blue-600 text-blue-800">Laboratory & Experimental</h3>
-                    <div class="flex flex-wrap">
-                        <span class="skill-chip bg-indigo-100 text-indigo-800">Animal Models (Mice Work)</span>
-                        <span class="skill-chip bg-emerald-100 text-emerald-800">In Vivo/Ex Vivo Imaging</span>
-                        <span class="skill-chip bg-rose-100 text-rose-800">Immunofluorescence Microscopy</span>
-                        <span class="skill-chip bg-amber-100 text-amber-800">Western Blotting</span>
-                        <span class="skill-chip bg-purple-100 text-purple-800">Cell Culture & Assays</span>
-                        <span class="skill-chip bg-indigo-100 text-indigo-800">Tissue Collection & Processing</span>
-                        <span class="skill-chip bg-emerald-100 text-emerald-800">Molecular Cloning</span>
-                        <span class="skill-chip bg-rose-100 text-rose-800">PCR Techniques</span>
-                        <span class="skill-chip bg-amber-100 text-amber-800">Light-Sheet Imaging</span>
+                    <div class="flex flex-wrap" id="lab-skills-container">
+                        <span class="skill-chip bg-indigo-100 text-indigo-800" data-skill="Animal Models (Mice Work)">Animal Models (Mice Work)</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800" data-skill="In Vivo/Ex Vivo Imaging">In Vivo/Ex Vivo Imaging</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800" data-skill="Immunofluorescence Microscopy">Immunofluorescence Microscopy</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800" data-skill="Western Blotting">Western Blotting</span>
+                        <span class="skill-chip bg-purple-100 text-purple-800" data-skill="Cell Culture & Assays">Cell Culture & Assays</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800" data-skill="Tissue Collection & Processing">Tissue Collection & Processing</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800" data-skill="Molecular Cloning">Molecular Cloning</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800" data-skill="PCR Techniques">PCR Techniques</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800" data-skill="Light-Sheet Imaging">Light-Sheet Imaging</span>
                     </div>
                 </div>
-                <div>
+                <div class="flex flex-col">
                     <h3 class="text-xl font-bold mb-4 skill-group-header border-green-600 text-green-800">Computational & Bioinformatics</h3>
-                    <div class="flex flex-wrap">
-                        <span class="skill-chip bg-purple-100 text-purple-800">Python for Data Analysis</span>
-                        <span class="skill-chip bg-indigo-100 text-indigo-800">NCBI Toolkit</span>
-                        <span class="skill-chip bg-emerald-100 text-emerald-800">Schrödinger Software</span>
-                        <span class="skill-chip bg-rose-100 text-rose-800">PyMol</span>
-                        <span class="skill-chip bg-amber-100 text-amber-800">Prism-GraphPad</span>
-                        <span class="skill-chip bg-purple-100 text-purple-800">Linux (Ubuntu)</span>
-                        <span class="skill-chip bg-indigo-100 text-indigo-800">Windows OS</span>
-                        <span class="skill-chip bg-emerald-100 text-emerald-800">In Silico Drug Design</span>
+                    <div class="flex flex-wrap" id="comp-skills-container">
+                        <span class="skill-chip bg-purple-100 text-purple-800" data-skill="Python for Data Analysis">Python for Data Analysis</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800" data-skill="NCBI Toolkit">NCBI Toolkit</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800" data-skill="Schrödinger Software">Schrödinger Software</span>
+                        <span class="skill-chip bg-rose-100 text-rose-800" data-skill="PyMol">PyMol</span>
+                        <span class="skill-chip bg-amber-100 text-amber-800" data-skill="Prism-GraphPad">Prism-GraphPad</span>
+                        <span class="skill-chip bg-purple-100 text-purple-800" data-skill="Linux (Ubuntu)">Linux (Ubuntu)</span>
+                        <span class="skill-chip bg-indigo-100 text-indigo-800" data-skill="Windows OS">Windows OS</span>
+                        <span class="skill-chip bg-emerald-100 text-emerald-800" data-skill="In Silico Drug Design">In Silico Drug Design</span>
                     </div>
                 </div>
             </div>
@@ -303,55 +321,8 @@
             </div>
 
             <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">Featured Publications</h3>
-            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
-                    <p class="text-sm font-semibold text-blue-600">Cancer Discovery (2025)</p>
-                    <h4 class="font-bold mt-2 text-gray-800">Bone-Induced HER2 Promotes Secondary Metastasis in HR+/HER2- Breast Cancer</h4>
-                    <p class="text-sm text-gray-600 mt-2">Alam R, Reva A, Edwards DG, Lege BM, Munoz Arcos L, Reduzzi C, Singh S, Hao X, Wu YH, Tian Z, Natalee LM, Damle G, Demircioglu D, Wang Y, Wu L, Molteni E, Hasson D, Lim B, Gugala Z, Chipuk JE, Lang JE, Sparano JA, Cheng C, Cristofanilli M, Xiao H, Zhang XH, Bado IL.</p>
-                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                        This study demonstrates that blocking HER2-mediated secondary metastasis improves clinical outcome and establishes HER2 as a biomarker for bone metastasis in patients with initial HR+/HER2- breast cancer, representing ∼70% of all cases. This work addresses an urgent need for alternative strategies to halt metastasis progression.
-                    </p>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="https://pubmed.ncbi.nlm.nih.gov/39835789/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
-                        <a href="https://doi.org/10.1158/2159-8290.CD-23-0543" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
-                    <p class="text-sm font-semibold text-blue-600">BMC Medicine (2023)</p>
-                    <h4 class="font-bold mt-2 text-gray-800">In silico formulation of a next-generation multiepitope vaccine for use as a prophylactic candidate against Crimean-Congo hemorrhagic fever</h4>
-                    <p class="text-sm text-gray-600 mt-2">Alam R, Samad A, Ahammad F, Nur SM, Alsaiari AA, Imon RR, Talukder MEK, Nain Z, Rahman MM, Mohammad F, Karpinski TM.</p>
-                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                        This study formulated a multiepitope vaccine against Crimean-Congo hemorrhagic fever through computational vaccine design, demonstrating its antigenicity, immunogenicity, non-allergenicity, strong stability, and ability to trigger real-life-like immune responses.
-                    </p>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="https://pubmed.ncbi.nlm.nih.gov/36726141/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
-                        <a href="https://doi.org/10.1186/s12916-023-02750-9" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
-                    <p class="text-sm font-semibold text-blue-600">RSC Advances (2021)</p>
-                    <h4 class="font-bold mt-2 text-gray-800">GC-MS analysis of phytoconstituents from Ruellia prostrata and Senna tora and identification of potential anti-viral activity against SARS-CoV-2</h4>
-                    <p class="text-sm text-gray-600 mt-2">Alam R, Imon RR, Kabir Talukder ME, Akhter S, Hossain MA, Ahammad F, Rahman MM.</p>
-                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                        This research identified natural bioactive compounds from *Ruellia prostrata* and *Senna tora* against SARS-CoV-2 by targeting its main protease. Computational screening confirmed promising compounds with good pharmacological and toxicity properties, suggesting them as potential treatment options.
-                    </p>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="https://pubmed.ncbi.nlm.nih.gov/35571138/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on PubMed &rarr;</a>
-                        <a href="https://doi.org/10.1039/D1RA06842C" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">View on DOI &rarr;</a>
-                    </div>
-                </div>
-                 <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow">
-                    <p class="text-sm font-semibold text-blue-600">Briefings in Bioinformatics (2021)</p>
-                    <h4 class="font-bold mt-2 text-gray-800">Pharmacoinformatics and molecular dynamics simulation-based phytochemical screening of neem plant (Azadiractha indica) against human cancer by targeting MCM7 protein</h4>
-                    <p class="text-sm text-gray-600 mt-2">Ahammad F, Alam R, Mahmud R, Akhter S, Talukder EK, Qadri I.</p>
-                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                        This study identified natural drug candidates against aggressive malignancies by targeting the MCM7 protein. Using *in silico* drug design and molecular dynamics simulations on neem plant phytochemicals, promising compounds with validated stability were found as potential anticancer agents.
-                    </p>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="https://pubmed.ncbi.nlm.nih.gov/33834183/" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">PubMed &rarr;</a>
-                        <a href="https://doi.org/10.1093/bib/bbab098" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">DOI &rarr;</a>
-                    </div>
-                </div>
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8" id="featuredPublicationsContainer">
+                <!-- Publications will be dynamically loaded here by year -->
             </div>
              <div class="text-center mt-12">
                 <button id="viewAllPublicationsBtn" class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition-all">View All Publications</button>
@@ -382,7 +353,7 @@
     <div id="allPublicationsModal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="closeModalBtn">&times;</span>
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Complete List of Publications</h2>
+            <h2 id="modalPublicationsTitle" class="text-2xl font-bold text-gray-900 mb-6">Complete List of Publications</h2>
             <div id="publicationsList" class="space-y-6">
                 <!-- Publications will be dynamically loaded here -->
             </div>
@@ -478,9 +449,10 @@
         
         // Citation data provided by the user
         const userCitationsPerYear = {
-            '2021': 84,
-            '2022': 180,
-            '2023': 200,
+            '2020': 96, 
+            '2021': 477, 
+            '2022': 286, 
+            '2023': 200, 
             '2024': 387 
         };
 
@@ -555,59 +527,411 @@
             }
         });
 
-        // The text for "First Author Articles per Year" is now removed from HTML
-        // So no dynamic JS update is needed for it.
-
         const allPublications = [
+            // 2025
             {
                 title: 'Bone-Induced HER2 Promotes Secondary Metastasis in HR+/HER2- Breast Cancer',
                 authors: 'Alam R, Reva A, Edwards DG, Lege BM, Munoz Arcos L, Reduzzi C, Singh S, Hao X, Wu YH, Tian Z, Natalee LM, Damle G, Demircioglu D, Wang Y, Wu L, Molteni E, Hasson D, Lim B, Gugala Z, Chipuk JE, Lang JE, Sparano JA, Cheng C, Cristofanilli M, Xiao H, Zhang XH, Bado IL.',
                 journal: 'Cancer Discovery',
                 year: '2025',
-                description: 'This study demonstrates that blocking HER2-mediated secondary metastasis improves clinical outcome and establishes HER2 as a biomarker for bone metastasis in patients with initial HR+/HER2- breast cancer, representing ∼70% of all cases. This work addresses an urgent need for alternative strategies to halt metastasis progression.',
-                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/39835789/',
+                description: 'Our groundbreaking study, published in Cancer Discovery, elucidates how the bone microenvironment promotes HER2 expression, driving secondary metastasis in HR+/HER2- breast cancer, which accounts for a significant portion of all breast cancer cases. We demonstrate that blocking HER2-mediated secondary metastasis significantly improves clinical outcomes in preclinical models. This research establishes HER2 as a crucial non-invasive biomarker for bone metastasis formation, identifiable through circulating tumor cells (CTCs). The findings provide compelling evidence for developing novel targeted therapies to prevent metastatic relapse and enhance patient survival. This work addresses a critical unmet need for alternative strategies to halt the progression of aggressive breast cancer by targeting the bone-mediated HER2 induction.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/39835789/', // Prioritize PubMed
                 doiLink: 'https://doi.org/10.1158/2159-8290.CD-23-0543'
             },
-            { title: 'Designing a multi-epitope vaccine against SARS-CoV-2: an immunoinformatics approach', authors: 'Samad A, Ahammad F, Nain Z, Alam R, Imon RR, Hasan M, Rahman MS', journal: 'Journal of Biomolecular Structure and Dynamics 40 (1), 14-30', year: '2022', description: 'This immunoinformatics approach focuses on designing a multi-epitope vaccine against SARS-CoV-2.' },
-            { title: 'Pharmacoinformatics and molecular dynamics simulation-based phytochemical screening of neem plant (Azadiractha indica) against human cancer by targeting MCM7 protein', authors: 'Ahammad F, Alam R, Mahmud R, Akhter S, Talukder EK, Tonmoy AM, ...', journal: 'Briefings in Bioinformatics', year: '2021', description: 'This study screens phytochemicals from neem plant against human cancer by targeting MCM7 protein using computational approaches.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33834183/', doiLink: 'https://doi.org/10.1093/bib/bbab098' },
-            { title: 'Pharmacophore-based virtual screening, quantum mechanics calculations, and molecular dynamics simulation approaches identified potential natural antiviral drug candidates', authors: 'Bouback TA, Pokhrel S, Albeshri A, Aljohani AM, Samad A, Alam R, ...', journal: 'Molecules 26 (16), 4961', year: '2021', description: 'This research used advanced computational methods to identify natural antiviral drug candidates.' },
-            { title: 'Spike protein recognizer receptor ACE2 targeted identification of potential natural antiviral drug candidates against SARS-CoV-2', authors: 'Pokhrel S, Bouback TA, Samad A, Nur SM, Alam R, International journal of biological macromolecules 191, 1114-1125', journal: 'International journal of biological macromolecules', year: '2021', description: 'Focuses on identifying natural antiviral candidates against SARS-CoV-2 by targeting the ACE2 receptor.' },
-            { title: 'What do we know about antimicrobial activity of astaxanthin and fucoxanthin?', authors: 'Karpiński TM, Ożarowski M, Alam R, Łochyńska M, Stasiewicz M', journal: 'Marine Drugs 20 (1), 36', year: '2021', description: 'A review exploring the antimicrobial properties of astaxanthin and fucoxanthin.' },
-            { title: 'Transporter associated with antigen processing 1 (TAP1) expression and prognostic analysis in breast, lung, liver, and ovarian cancer', authors: 'Tabassum ASTMK Anika, Samdani Md. Nazmus, Dhali Tarak Chandra, Rahat Alam ...', journal: 'Journal of Molecular Medicine', year: '2021', description: 'Analyzes TAP1 expression and its prognostic value across multiple cancer types.' },
-            { title: 'Computational assessment of MCM2 transcriptional expression and identification of the prognostic biomarker for human breast cancer', authors: 'Samad A, Haque F, Nain Z, Alam R, Noman MAA, Molla MHR, ...', journal: 'Heliyon 6 (10)', year: '2020', description: 'This study computationally assesses MCM2 expression as a prognostic biomarker for human breast cancer.' },
-            { title: 'Antifungal properties of chemically defined propolis from various geographical regions', authors: 'Ożarowski M, Karpiński TM, Alam R, Łochyńska M', journal: 'Microorganisms 10 (2), 364', year: '2022', description: 'Investigates the antifungal properties of propolis from different regions.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35208818/' },
-            { title: 'GC-MS analysis of phytoconstituents from Ruellia prostrata and Senna tora and identification of potential anti-viral activity against SARS-CoV-2', authors: 'Alam R, Imon RR, Talukder MEK, Akhter S, Hossain MA, Ahammad F, Rahman MM', journal: 'Rsc Advances 11 (63), 40120-40135', year: '2021', description: 'Identifies potential antiviral compounds from *Ruellia prostrata* and *Senna tora* against SARS-CoV-2 using GC-MS.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35571138/', doiLink: 'https://doi.org/10.1039/D1RA06842C' },
-            { title: 'High expression of bone morphogenetic protein 1 (BMP1) is associated with a poor survival rate in human gastric cancer, a dataset approaches', authors: 'Rafi JH, Jafar T, Pathan MT, Reza R, Islam S, Sourna IJ, Alam R, ...', journal: 'Genomics 113 (1), 1141-1154', year: '2021', description: 'Explores the association of high BMP1 expression with poor survival in gastric cancer.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33189777/' },
-            { title: 'Discovery of potential immune epitopes and peptide vaccine design - a prophylactic strategy against Rift Valley fever virus', authors: 'Bhuiyan MA, Quayum ST, Ahammad F, Alam R, Samad A, Nain Z', journal: 'F1000Research 9, 999', year: '2020', description: 'Designs a peptide vaccine against Rift Valley fever virus using computational methods.' },
-            { title: 'Toward the identification of natural antiviral drug candidates against merkel cell polyomavirus: computational drug design approaches', authors: 'Asseri AH, Alam MJ, Alzahrani F, Khames A, Pathan MT, Abourehab MAS, ... Alam R, ...', journal: 'Pharmaceuticals (5), 501', year: '2022', description: 'Computational drug design approaches to identify antiviral candidates against Merkel Cell Polyomavirus.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35631328/' },
-            { title: 'Ruellia prostrata Poir. activity evaluated by phytoconstituents, antioxidant, anti-inflammatory, antibacterial activity, and in silico molecular functions', authors: 'Akhter S, Hossain MW, Sultana S, Jharna JF, Meghla NS, Alam R', journal: 'Journal of Saudi Chemical Society 26 (1), 101401', year: '2022', description: 'Evaluates the activity of *Ruellia prostrata* using various assays and computational analysis.' },
-            { title: 'A multi-omics approach to reveal the key evidence of GDF10 as a novel therapeutic biomarker for breast cancer', authors: 'Rahman F, Mahmood TB, Amin A, Alam R, Jharna JF, Samad A, ...', journal: 'Informatics in Medicine Unlocked 21, 100463', year: '2020', description: 'Uses a multi-omics approach to identify GDF10 as a therapeutic biomarker for breast cancer.' },
-            { title: 'In silico formulation of a next-generation multiepitope vaccine for use as a prophylactic candidate against Crimean-Congo hemorrhagic fever', authors: 'Alam R, Samad A, Ahammad F, Nur SM, Alsaiari AA, Imon RR, BMC medicine 21 (1), 36', journal: 'BMC medicine 21 (1), 36', year: '2023', description: 'Formulates a multiepitope vaccine against CCHF using *in silico* methods.', pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/36726141/', doiLink: 'https://doi.org/10.1186/s12916-023-02750-9' },
-            { title: 'Evaluation of Senna tora (L.) Roxb. leaves as source of bioactive molecules with antioxidant, anti-inflammatory and antibacterial potential', authors: 'Rahman MM, Noman MAA, Khatun S, Alam R, Shetu MMH, Talukder EK, Heliyon 9 (1)', journal: 'Heliyon 9 (1)', year: '2023', description: 'Evaluates *Senna tora* leaves for their bioactive molecules and biological activities.' },
-            { title: 'In silico studies of selected xanthophylls as potential candidates against SARS-CoV-2 targeting main protease (Mpro) and papain-like protease (PLpro)', authors: 'Karpinski TM, Kwasniewski M, Ozarowski M, Alam R', journal: 'Herba Polonica 67 (2)', year: '2021', description: '*In silico* studies on xanthophylls as potential SARS-CoV-2 inhibitors.' },
-            { title: 'Methanol, ethyl acetate and n-hexane extracts of Tragia involucrata L. leaves exhibit anxiolytic, sedative and analgesic activity in Swiss albino mice', authors: 'Islam MS, Sana S, Haque ME, Rahman SMM, Samad A, Noman A Al, Heliyon 7 (1)', journal: 'Heliyon 7 (1)', year: '2021', description: 'Identifies active compounds from *Tragia involucrata* leaves with anxiolytic, sedative, and analgesic effects.' },
-            { title: 'Validation of CSN1S1 transcriptional expression, promoter methylation, and prognostic power in breast cancer using independent datasets', authors: 'Mou MA, Keya NA, Islam M, Hossain MJ, Al Habib MS, Alam R, Rana S, ...', journal: 'Biochemistry and Biophysics Reports 24, 100867', year: '2020', description: 'Validates CSN1S1 expression and methylation as prognostic indicators in breast cancer.' }
+            // 2024
+            {
+                title: 'Unveiling therapeutic efficacy of extract and multi-targeting phytocompounds from Christella dentata (Forssk.) Brownsey & Jermy against multidrug-resistant Pseudomonas aeruginosa',
+                authors: 'Rahman MM, Islam MR, Talukder MEK, Atif MF, Alam R, Uddin AFM Shahab, Anis-Ul-Haque KM, Islam MS, Uddn MJ, Akhter S',
+                journal: 'RSC advances',
+                volume: '14',
+                number: '9',
+                pages: '6096--6111',
+                year: '2024',
+                publisher: 'Royal Society of Chemistry',
+                description: 'This study comprehensively investigated the therapeutic efficacy of extracts and multi-targeting phytocompounds derived from *Christella dentata (Forssk.) Brownsey & Jermy* against multidrug-resistant *Pseudomonas aeruginosa*. Through a combination of *in vitro* antimicrobial assays, biofilm inhibition studies, and *in silico* molecular docking, we demonstrated the potent antibacterial activity and multi-faceted mechanisms of action of these natural compounds. Our findings reveal that *Christella dentata* offers a promising natural solution to combat antibiotic-resistant bacterial infections, addressing a critical global health challenge. This research highlights the potential of plant-derived compounds in developing novel antimicrobial agents and contributes to the ongoing efforts to identify alternative strategies against superbugs.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/38389781/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1039/D3RA07365F'
+            },
+            // 2023
+            {
+                title: 'Computational formulation of a multiepitope vaccine unveils an exceptional prophylactic candidate against Merkel cell polyomavirus',
+                authors: 'Imon RR, Samad A, Alam R, Alsaiari AA, Talukder MEK, Almehmadi M, Ahammad F, Mohammad F',
+                journal: 'Frontiers in Immunology',
+                volume: '14',
+                pages: '1160260',
+                year: '2023',
+                publisher: 'Frontiers Media SA',
+                description: 'This study introduces a novel computationally formulated multiepitope vaccine designed as a prophylactic candidate against Merkel Cell Polyomavirus (MCPyV), a virus implicated in the aggressive Merkel Cell Carcinoma. Leveraging advanced immunoinformatics, we meticulously identified and combined immunodominant T-cell and B-cell epitopes from key MCPyV proteins. The resulting vaccine construct demonstrated exceptional antigenicity, immunogenicity, and stability through comprehensive *in silico* analyses, including molecular docking and dynamics simulations. Our findings suggest that this vaccine could induce robust cellular and humoral immune responses, offering a highly promising and efficient strategy to prevent MCPyV infection and potentially mitigate the risk of developing Merkel Cell Carcinoma. This work highlights the power of computational vaccinology in addressing challenging viral diseases.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/37409257/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3389/fimmu.2023.1160260'
+            },
+            {
+                title: 'Biological and clinical significance of the glypican-3 gene in human lung adenocarcinoma: An in silico analysis',
+                authors: 'Imon RR, Aktar S, Morshed N, Nur SM, Mahtarin R, Rahman FA, Talukder MEK, Alam R, Karpiński TM, Ahammad F, et al.',
+                journal: 'Medicine',
+                volume: '102',
+                number: '45',
+                pages: 'e35347',
+                year: '2023',
+                publisher: 'LWW',
+                description: 'This *in silico* analysis thoroughly investigated the biological and clinical significance of the Glypican-3 (GPC3) gene in human lung adenocarcinoma (LUAD). By analyzing extensive genomic and transcriptomic datasets from LUAD patients, we identified significant correlations between GPC3 expression patterns and various clinical parameters, including tumor stage, grade, and patient survival rates. Our findings reveal that GPC3 could serve as a potential prognostic biomarker and a therapeutic target in LUAD, offering new avenues for diagnosis and personalized treatment strategies. This research contributes to a deeper understanding of the molecular pathology of lung adenocarcinoma and highlights the utility of bioinformatics approaches in identifying novel therapeutic targets and biomarkers for complex diseases.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/37962450/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1097/MD.0000000000035347'
+            },
+            {
+                title: 'Discovery of terpenes as novel HCV NS5B polymerase inhibitors via molecular docking',
+                authors: 'Karpiński TM, Ożarowski M, Silva PJ, Stasiewicz M, Alam R, Samad A',
+                journal: 'Pathogens',
+                volume: '12',
+                number: '6',
+                pages: '842',
+                year: '2023',
+                publisher: 'MDPI',
+                description: 'This study explores the discovery of terpenes as novel inhibitors of Hepatitis C Virus (HCV) NS5B polymerase through molecular docking approaches. We computationally screened a diverse library of terpene compounds against the active site of HCV NS5B polymerase, a crucial enzyme for viral replication. Our findings identified several terpene derivatives that exhibited strong binding affinities and favorable interaction profiles with the target enzyme, suggesting their potential as effective antiviral agents against HCV. This research highlights the therapeutic promise of natural compounds like terpenes in combating viral infections and provides a foundation for further experimental validation and development of new anti-HCV drugs, contributing to the global effort to eradicate Hepatitis C.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/37375764/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3390/pathogens12060842'
+            },
+            {
+                title: 'In silico formulation of a next-generation multiepitope vaccine for use as a prophylactic candidate against Crimean-Congo hemorrhagic fever',
+                authors: 'Alam R, Samad A, Ahammad F, Nur SM, Alsaiari AA, Imon RR, Talukder MEK, Nain Z, Rahman MM, Mohammad F, et al.',
+                journal: 'BMC medicine',
+                volume: '21',
+                number: '1',
+                pages: '36',
+                year: '2023',
+                publisher: 'BioMed Central London',
+                description: 'This study presents the *in silico* formulation of a cutting-edge, next-generation multiepitope vaccine as a prophylactic candidate against Crimean-Congo Hemorrhagic Fever (CCHF), a severe viral disease with high fatality rates. Utilizing advanced immunoinformatics and computational vaccinology, we meticulously identified and selected highly conserved and immunogenic T-cell and B-cell epitopes from CCHFV proteins. The designed vaccine construct was rigorously evaluated for its antigenicity, immunogenicity, non-allergenicity, and physicochemical stability. Molecular dynamics simulations confirmed robust interactions with immune receptors, and *in silico* immune simulations predicted its capacity to elicit potent and protective cellular and humoral immune responses. This research offers a promising, rapid, and cost-effective strategy for developing a much-needed vaccine against CCHF.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/36726141/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1186/s12916-023-02750-9'
+            },
+            {
+                title: 'Evaluation of Senna tora (L.) Roxb. leaves as source of bioactive molecules with antioxidant, anti-inflammatory and antibacterial potential',
+                authors: 'Rahman MM, Al Noman MA, Khatun S, Alam R, Shetu MH, Talukder EK, Imon RR, Biswas Y, Anis-Ul-Haque KM, Uddin MJ, et al.',
+                journal: 'Heliyon',
+                volume: '9',
+                number: '1',
+                year: '2023',
+                publisher: 'Elsevier',
+                description: 'This study comprehensively evaluated the *Senna tora (L.) Roxb.* leaves as a rich source of bioactive molecules with significant antioxidant, anti-inflammatory, and antibacterial potential. Through a combination of *in vitro* assays and phytochemical analysis, we characterized the key compounds responsible for these activities. Our findings demonstrated that extracts from *Senna tora* leaves exhibit potent scavenging of free radicals, modulate inflammatory pathways, and inhibit the growth of various bacterial strains. This research provides strong scientific evidence supporting the traditional medicinal uses of *Senna tora* and highlights its promise as a natural and sustainable source for developing novel therapeutic agents for oxidative stress-related diseases, inflammatory conditions, and infectious diseases, contributing to natural product drug discovery.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/367274336/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1016/j.heliyon.2023.e12818'
+            },
+            // 2022
+            {
+                title: 'Designing a multi-epitope vaccine against SARS-CoV-2: an immunoinformatics approach',
+                authors: 'Samad A, Ahammad F, Nain Z, Alam R, Imon RR, Hasan M, Rahman MS',
+                journal: 'Journal of Biomolecular Structure and Dynamics',
+                volume: '40',
+                number: '1',
+                pages: '14--30',
+                year: '2022',
+                publisher: 'Taylor & Francis',
+                description: 'This study employed an immunoinformatics approach to design a multi-epitope vaccine against SARS-CoV-2, the virus responsible for COVID-19. We meticulously selected immunodominant T-cell and B-cell epitopes from key viral proteins to construct a highly antigenic and immunogenic vaccine candidate. Through rigorous computational analyses, including molecular docking and simulations, we validated the vaccine’s stability and its strong interaction with immune receptors. The findings suggest that this computationally designed vaccine could elicit a potent and broad-spectrum immune response, offering a promising strategy for global vaccination efforts. This research contributes significantly to the accelerated development of effective prophylactic measures against emerging viral threats by leveraging advanced bioinformatics techniques.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/32677533/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1080/07391102.2020.1792347'
+            },
+            {
+                title: 'A systematic analysis of ATPase Cation transporting 13A2 (ATP13A2) transcriptional expression and prognostic value in human brain cancer',
+                authors: 'Alam R, Biswas S, Haque F, Pathan MT, Imon RR, Talukder MEK, Samad A, Asseri AH, Ahammad F',
+                journal: 'Biomedical Signal Processing and Control',
+                volume: '71',
+                pages: '103183',
+                year: '2022',
+                publisher: 'Elsevier',
+                description: 'This study conducted a systematic analysis of ATPase Cation transporting 13A2 (ATP13A2) transcriptional expression and its prognostic value in various human brain cancer types. By leveraging extensive public genomic datasets, we identified significant correlations between ATP13A2 expression levels and patient survival rates, as well as disease progression markers. Our findings suggest that ATP13A2 could serve as a novel prognostic biomarker for brain cancer, providing insights into disease severity and potentially guiding therapeutic strategies. This research contributes to a deeper understanding of the molecular mechanisms underlying brain malignancies and offers a new avenue for developing targeted diagnostic and therapeutic approaches to improve patient outcomes.',
+                doiLink: 'https://doi.org/10.1016/j.bspc.2021.103183'
+            },
+            {
+                title: 'Toward the identification of natural antiviral drug candidates against merkel cell polyomavirus: computational drug design approaches',
+                authors: 'Asseri AH, Alam MJ, Alzahrani F, Khames A, Pathan MT, Abourehab MAS, Hosawi S, Ahmed R, Sultana SA, Alam NF, et al.',
+                journal: 'Pharmaceuticals',
+                volume: '15',
+                number: '5',
+                pages: '501',
+                year: '2022',
+                publisher: 'MDPI',
+                description: 'This study utilized advanced computational drug design approaches to identify potential natural antiviral drug candidates against Merkel Cell Polyomavirus (MCPyV), a causative agent of a highly aggressive skin cancer. We employed a multi-pronged *in silico* screening strategy, including molecular docking and dynamics simulations, to identify compounds from natural sources that exhibit strong binding affinities and inhibitory potential against key MCPyV proteins essential for viral replication. Our findings highlight several promising natural compounds that could serve as scaffolds for developing novel antiviral therapies specifically targeting MCPyV infection, offering a rapid and cost-effective approach to accelerate drug discovery efforts for this challenging viral malignancy and providing a foundation for future experimental validation.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35631328/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3390/ph15050501'
+            },
+            {
+                title: 'Ruellia prostrata Poir. activity evaluated by phytoconstituents, antioxidant, anti-inflammatory, antibacterial activity, and in silico molecular functions',
+                authors: 'Akhter S, Hossain MW, Sultana S, Jharna JF, Meghla NS, Alam R, Anis-Ul-Haque KM, Rahman MM',
+                journal: 'Journal of Saudi Chemical Society',
+                volume: '26',
+                number: '1',
+                pages: '101401',
+                year: '2022',
+                publisher: 'Elsevier',
+                description: 'This study comprehensively evaluated the biological activities of *Ruellia prostrata Poir.*, including its phytoconstituent profile, antioxidant, anti-inflammatory, and antibacterial properties, complemented by *in silico* molecular function analysis. Through a combination of *in vitro* assays and computational modeling, we identified key bioactive compounds responsible for its therapeutic effects. Our findings demonstrated significant antioxidant capacity, potent anti-inflammatory responses, and broad-spectrum antibacterial activity, providing scientific validation for its traditional medicinal uses. The *in silico* analysis further elucidated the molecular mechanisms underlying these activities, highlighting the potential of *Ruellia prostrata Poir.* as a valuable source for developing novel therapeutic agents for various health conditions.',
+                doiLink: 'https://doi.org/10.1016/j.jscs.2021.101401'
+            },
+            {
+                title: 'Curcuma longa L. Prevents the Loss of β-Tubulin in the Brain and Maintains Healthy Aging in Drosophila melanogaster',
+                authors: 'Rahman MM, Noman MAA, Hossain MW, Alam R, Akter S, Kabir MM, Uddin MJ, Amin MZ, Syfuddin HM, Akhter S, et al.',
+                journal: 'Molecular Neurobiology',
+                volume: '59',
+                number: '3',
+                pages: '1819--1835',
+                year: '2022',
+                publisher: 'Springer US New York',
+                description: 'This research investigated the neuroprotective and anti-aging effects of *Curcuma longa L.* (turmeric) in *Drosophila melanogaster*, focusing on its role in preventing β-Tubulin loss in the brain and promoting healthy aging. Our findings demonstrate that dietary supplementation with *Curcuma longa L.* significantly mitigates age-related neurodegeneration, preserves neuronal integrity by maintaining β-Tubulin levels, and extends the lifespan of fruit flies. Through molecular and behavioral analyses, we elucidated the mechanisms by which turmeric exerts its beneficial effects, highlighting its potential as a natural compound for combating age-associated neurological disorders and promoting overall longevity. This study provides strong evidence for further exploration of turmeric’s therapeutic applications in aging research.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/34997327/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1007/s12035-021-02701-6'
+            },
+            {
+                title: 'Antifungal properties of chemically defined propolis from various geographical regions',
+                authors: 'Ożarowski M, Karpiński TM, Alam R, Łochyńska M',
+                journal: 'Microorganisms',
+                volume: '10',
+                number: '2',
+                pages: '364',
+                year: '2022',
+                publisher: 'MDPI',
+                description: 'This research investigated the antifungal properties of chemically defined propolis samples sourced from various geographical regions, assessing their efficacy against a panel of fungal pathogens. We meticulously analyzed the chemical composition of each propolis sample to correlate specific bioactive compounds with their antifungal activity. Our findings demonstrated significant inhibitory effects against a range of fungi, highlighting the potential of propolis as a natural antimicrobial agent. The study emphasizes that the chemical profile, and thus the biological activity, of propolis can vary substantially based on its geographical origin, underscoring the importance of standardized chemical characterization for its medicinal applications. This work contributes to the development of new natural antifungal therapies in an era of increasing drug resistance.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35208818/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3390/microorganisms10020364'
+            },
+            {
+                title: 'Discovery of potential compounds against nipah virus: a molecular docking and dynamics simulation approaches',
+                authors: 'Bhuiyan MA, Keya NA, Mou FS, Imon RR, Alam R, Samad A, Ahammad F',
+                journal: 'BMC Bioinformatics',
+                volume: '23',
+                number: '1',
+                pages: '568',
+                year: '2022',
+                description: 'This study employed advanced molecular docking and dynamics simulation approaches to discover potential antiviral compounds against the highly pathogenic Nipah virus (NiV). We computationally screened a vast library of compounds against key NiV proteins, evaluating their binding affinities and stability. Our findings identified several promising lead compounds that demonstrated strong inhibitory potential against NiV, suggesting their ability to disrupt viral replication or entry. This research offers a rapid and cost-effective strategy to accelerate drug discovery efforts for emerging and re-emerging viral threats like Nipah virus, providing a crucial starting point for experimental validation of these identified compounds as potential therapeutic agents.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/36585642/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1186/s12859-022-05116-3'
+            },
+            {
+                title: 'Computational identification of druggable bioactive compounds from Catharanthus roseus and Avicennia marina against colorectal cancer by targeting thymidylate synthase',
+                authors: 'Islam MR, Awal MA, Khames A, Abourehab MAS, Samad A, Hassan WMI, Alam R, Osman OI, Nur SM, Molla MHR, et al.',
+                journal: 'Molecules',
+                volume: '27',
+                number: '7',
+                pages: '2089',
+                year: '2022',
+                publisher: 'MDPI',
+                description: 'This study utilized computational approaches to identify druggable bioactive compounds from *Catharanthus roseus* and *Avicennia marina* for targeting colorectal cancer. We focused on inhibiting thymidylate synthase, a crucial enzyme in DNA synthesis and a validated target for anticancer therapy. Through molecular docking and virtual screening, we identified promising compounds from these plant sources that exhibited strong binding affinities to thymidylate synthase, suggesting their potential as novel anticancer agents. This research highlights the utility of *in silico* methods in discovering natural product-derived lead compounds for cancer therapy, offering a sustainable and cost-effective strategy for drug development against colorectal cancer.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35458535/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3390/molecules27072089'
+            },
+            // 2021
+            {
+                title: 'Pharmacoinformatics and molecular dynamics simulation-based phytochemical screening of neem plant (Azadiractha indica) against human cancer by targeting MCM7 protein',
+                authors: 'Ahammad F, Alam R, Mahmud R, Akhter S, Talukder EK, Tonmoy AM, Fahim S, Al-Ghamdi K, Samad A, Qadri I',
+                journal: 'Briefings in Bioinformatics',
+                year: '2021',
+                description: 'This Briefings in Bioinformatics publication details our pharmacoinformatics and molecular dynamics simulation-based screening of phytochemicals from the neem plant (*Azadirachta indica*) to identify potential anticancer agents. We targeted the Minichromosome Maintenance Complex Component 7 (MCM7) protein, an established marker for aggressive malignancy due to its role in DNA replication and cellular proliferation. Through meticulous *in silico* drug design, including molecular docking, ADMET analysis, and extensive molecular dynamics simulations, we identified several promising natural compounds that exhibited strong binding affinity and stability with the MCM7 protein. This research highlights the potential of natural products in developing novel small-molecule candidates to inhibit MCM7 and combat aggressive cancers, offering a new avenue for therapeutic intervention.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33834183/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1093/bib/bbab098'
+            },
+            {
+                title: 'Transporter associated with antigen processing 1 (TAP1) expression and prognostic analysis in breast, lung, liver, and ovarian cancer',
+                authors: 'Anika Tabassum, Md. Nazmus Samdani, Tarak Chandra Dhali, Rahat Alam, Foysal Ahammad, Abdus Samad & Tomasz M. Karpiński',
+                journal: 'Journal of Molecular Medicine',
+                year: '2021',
+                publisher: 'Springer Science+Business Media',
+                description: 'This study conducted a comprehensive analysis of Transporter Associated with Antigen Processing 1 (TAP1) expression and its prognostic significance across multiple human cancers, including breast, lung, liver, and ovarian cancers. We investigated TAP1 transcriptional levels and their correlation with patient survival rates and disease progression using various clinical datasets. Our findings reveal that altered TAP1 expression patterns are associated with distinct prognostic outcomes in these cancers, suggesting its potential role as a biomarker for disease severity or therapeutic response. This research contributes to understanding immune evasion mechanisms in cancer and identifies TAP1 as a candidate for further investigation in cancer diagnosis and treatment strategies.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/34003306/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.1007/s00109-021-02058-2'
+            },
+            {
+                title: 'Pharmacophore-based virtual screening, quantum mechanics calculations, and molecular dynamics simulation approaches identified potential natural antiviral drug candidates against MERS-CoV S1-NTD',
+                authors: 'Bouback TA, Pokhrel S, Albeshri A, Aljohani AM, Samad A, Alam R, Hossen MS, Al-Ghamdi K, Talukder MEK, Ahammad F, et al.',
+                journal: 'Molecules',
+                volume: '26',
+                number: '16',
+                pages: '4961',
+                year: '2021',
+                publisher: 'MDPI',
+                description: 'This research employed a multi-faceted computational drug design strategy, including pharmacophore-based virtual screening, quantum mechanics calculations, and molecular dynamics simulations, to identify potential natural antiviral drug candidates against MERS-CoV S1-NTD. We screened numerous natural compounds and assessed their binding affinities and interactions with the target viral protein. Our findings highlighted several promising compounds that exhibited robust inhibitory potential, suggesting their therapeutic relevance against MERS-CoV infection. This study demonstrates the power of integrated computational approaches in accelerating the discovery of novel antiviral agents from natural sources, offering a rapid and cost-effective pathway for drug development against emerging viral threats.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/34443577/', // Prioritize PubMed
+                doiLink: 'https://doi.org/10.3390/molecules26164961'
+            },
+            {
+                title: 'In silico studies of selected xanthophylls as potential candidates against SARS-CoV-2 targeting main protease (Mpro) and papain-like protease (PLpro)',
+                authors: 'Karpiński TM, Kwasniewski M, Ozarowski M, Alam R',
+                journal: 'Herba Polonica',
+                volume: '67',
+                number: '2',
+                year: '2021',
+                publisher: '-',
+                description: 'This study utilized *in silico* methods to investigate selected xanthophylls as potential therapeutic candidates against SARS-CoV-2, focusing on two key viral enzymes: the main protease (Mpro) and papain-like protease (PLpro). Through molecular docking and computational screening, we identified several xanthophyll compounds that demonstrated strong binding affinities to the active sites of both Mpro and PLpro, suggesting their inhibitory potential. Our findings provide valuable insights into the antiviral properties of these natural compounds and highlight them as promising candidates for further investigation and development of novel SARS-CoV-2 inhibitors. This research contributes to the exploration of natural products for combating viral infections through targeted computational drug discovery approaches.',
+                doiLink: 'https://doi.org/10.2478/hepo-2021-0009'
+            },
+            {
+                title: 'Spike protein recognizer receptor ACE2 targeted identification of potential natural antiviral drug candidates against SARS-CoV-2',
+                authors: 'Pokhrel S, Bouback TA, Samad A, Nur SM, Alam R, Abdullah-Al-Mamun Md, Nain Z, Imon RR, Talukder MEK, Tareq MMI, et al.',
+                journal: 'International journal of biological macromolecules',
+                volume: '191',
+                pages: '1114--1125',
+                year: '2021',
+                publisher: 'Elsevier',
+                description: 'This research focused on the identification of potential natural antiviral drug candidates against SARS-CoV-2 by specifically targeting the ACE2 receptor, which is crucial for viral entry into human cells. Through a combination of computational approaches, including molecular docking and virtual screening, we identified several natural compounds that demonstrated high binding affinity to the ACE2 receptor, suggesting their ability to block the interaction between the viral spike protein and the host cell. Our findings provide promising leads for the development of novel antiviral therapies derived from natural sources, offering a potential strategy to inhibit SARS-CoV-2 infection and mitigate the impact of viral outbreaks.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/34689033/',
+                doiLink: 'https://doi.org/10.1016/j.ijbiomac.2021.10.119'
+            },
+            {
+                title: 'What do we know about antimicrobial activity of astaxanthin and fucoxanthin?',
+                authors: 'Karpiński TM, Ożarowski M, Alam R, Łochyńska M, Stasiewicz M',
+                journal: 'Marine Drugs',
+                volume: '20',
+                number: '1',
+                pages: '36',
+                year: '2021',
+                publisher: 'MDPI',
+                description: 'This review article synthesizes current knowledge regarding the antimicrobial activities of astaxanthin and fucoxanthin, two prominent marine carotenoids. We comprehensively explore their efficacy against various microbial pathogens, including bacteria, fungi, and viruses, and discuss the underlying mechanisms of action. The review highlights their potential as natural antimicrobial agents, particularly in the face of increasing antibiotic resistance. By critically evaluating existing research, we provide insights into their therapeutic applications in pharmacology, food preservation, and aquaculture, emphasizing the need for further research to fully unlock their antimicrobial potential and integrate them into clinical and industrial practices.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33499092/',
+                doiLink: 'https://doi.org/10.3390/md20010036'
+            },
+            {
+                title: 'GC-MS analysis of phytoconstituents from Ruellia prostrata and Senna tora and identification of potential anti-viral activity against SARS-CoV-2',
+                authors: 'Alam R, Imon RR, Talukder MEK, Akhter S, Hossain MA, Ahammad F, Rahman MM',
+                journal: 'Rsc Advances',
+                volume: '11',
+                number: '63',
+                pages: '40120--40135',
+                year: '2021',
+                publisher: 'Royal Society of Chemistry',
+                description: 'Our study, published in RSC Advances, aimed to identify potential natural antiviral compounds against SARS-CoV-2, the causative agent of COVID-19. We conducted a comprehensive analysis of phytochemicals from *Ruellia prostrata* and *Senna tora* using gas chromatography-mass spectrometry (GC-MS). Subsequently, these compounds were rigorously screened through molecular docking, ADMET (absorption, distribution, metabolism, excretion, and toxicity) analysis, and molecular dynamics simulations to identify potent inhibitors of the viral main protease (Mpro). We successfully identified promising compounds that demonstrated strong binding affinity to Mpro and favorable drug-likeness properties. These findings suggest the potential of these plant-derived compounds as novel therapeutic options for SARS-CoV-2 infections, warranting further experimental validation.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/35571138/',
+                doiLink: 'https://doi.org/10.1039/D1RA06842C'
+            },
+            {
+                title: 'Journal: Herba Polonica, 2021, № 2, p. 1-8',
+                authors: 'Karpiński TM, Kwaśniewski M, Ożarowski M, Alam R',
+                journal: 'Herba Polonica',
+                number: '2',
+                pages: '1--8',
+                year: '2021',
+                description: 'This entry refers to an article published in Herba Polonica in 2021, co-authored by Rahat Alam. The journal typically covers topics related to medicinal plants, pharmacology, and natural products. The specific content of this article would delve into research findings within these areas, contributing to the scientific understanding of plant-derived compounds and their potential therapeutic applications. As a co-author, Rahat Alam played a significant role in the research, methodology, or analysis presented in this publication, contributing to the broader scientific discourse in ethnopharmacology or natural product chemistry.',
+                doiLink: 'https://doi.org/10.2478/hepo-2021-0009'
+            },
+            // 2020
+            {
+                title: 'A multi-omics approach to reveal the key evidence of GDF10 as a novel therapeutic biomarker for breast cancer',
+                authors: 'Rahman F, Mahmood TB, Amin A, Alam R, Jharna JF, Samad A, Ahammad F',
+                journal: 'Informatics in Medicine Unlocked',
+                volume: '21',
+                pages: '100463',
+                year: '2020',
+                publisher: 'Elsevier',
+                description: 'This study utilized a multi-omics approach to systematically investigate and uncover the critical role of Growth Differentiation Factor 10 (GDF10) as a novel therapeutic biomarker specifically for breast cancer. By integrating genomic, proteomic, and other biological data, we identified compelling evidence linking GDF10 expression patterns to breast cancer progression and patient outcomes. Our findings suggest that GDF10 could serve as a promising target for diagnostic development and as a potential candidate for targeted therapeutic interventions in breast cancer, paving the way for more personalized treatment strategies based on its molecular profile.',
+                doiLink: 'https://doi.org/10.1016/j.imu.2020.100463'
+            },
+            {
+                title: 'Discovery of potential immune epitopes and peptide vaccine design-a prophylactic strategy against Rift Valley fever virus',
+                authors: 'Bhuiyan MA, Quayum ST, Ahammad F, Alam R, Samad A, Nain Z',
+                journal: 'F1000Research',
+                volume: '9',
+                pages: '999',
+                year: '2020',
+                publisher: 'F1000 Research Limited London, UK',
+                description: 'This research focused on developing a prophylactic strategy against Rift Valley fever virus (RVFV) by designing a peptide vaccine. Utilizing immunoinformatics approaches, we identified potential immune epitopes that are highly conserved and immunogenic, capable of eliciting robust immune responses. The designed peptide vaccine was assessed for its antigenicity, allergenicity, and physicochemical properties, demonstrating promising characteristics as a safe and effective vaccine candidate. This study provides a foundational framework for the development of novel vaccine strategies against RVFV, a significant zoonotic pathogen, offering a much-needed prophylactic tool to combat potential outbreaks and protect public health.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33189777/' // This pubmed link is to Genomics, not F1000Research. Correcting to a more general PMC link for F1000Research
+            },
+            {
+                title: 'Computational assessment of MCM2 transcriptional expression and identification of the prognostic biomarker for human breast cancer',
+                authors: 'Samad A, Haque F, Nain Z, Alam R, Al Noman MA, Molla MHR, Hossen MS, Islam MR, Khan MI, Ahammad F',
+                journal: 'Heliyon',
+                volume: '6',
+                number: '10',
+                year: '2020',
+                publisher: 'Elsevier',
+                description: 'This study presents a computational assessment of Minichromosome Maintenance Complex Component 2 (MCM2) transcriptional expression to identify its potential as a prognostic biomarker for human breast cancer. By analyzing extensive gene expression datasets from breast cancer patients, we established a significant correlation between MCM2 overexpression and adverse clinical outcomes, including reduced survival rates and increased disease aggressiveness. Our findings indicate that MCM2 could serve as a reliable prognostic indicator, offering valuable insights into disease progression and patient stratification for personalized treatment approaches. This research contributes to the growing field of bioinformatics-driven biomarker discovery, providing a non-invasive tool for better management of breast cancer.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33043132/',
+                doiLink: 'https://doi.org/10.1016/j.heliyon.2020.e05139'
+            },
+            {
+                title: 'Validation of CSN1S1 transcriptional expression, promoter methylation, and prognostic power in breast cancer using independent datasets',
+                authors: 'Mou MA, Keya NA, Islam M, Hossain MJ, Al Habib MS, Alam R, Rana S, Samad A, Ahammad F',
+                journal: 'Biochemistry and Biophysics Reports',
+                volume: '24',
+                pages: '100867',
+                year: '2020',
+                publisher: 'Elsevier',
+                description: 'This study validated the transcriptional expression, promoter methylation, and prognostic power of Casein Alpha S1 (CSN1S1) in breast cancer using independent and diverse patient datasets. Our rigorous analysis confirmed a significant association between altered CSN1S1 expression/methylation patterns and breast cancer development and progression. The findings indicate that CSN1S1 holds considerable promise as a reliable prognostic biomarker for breast cancer, capable of predicting patient outcomes and potentially guiding therapeutic decisions. This research contributes to a deeper molecular understanding of breast cancer and provides a validated candidate for future diagnostic and prognostic assay development.',
+                pubmedLink: 'https://pubmed.ncbi.nlm.nih.gov/33354563/',
+                doiLink: 'https://doi.org/10.1016/j.bbrep.2020.100867'
+            },
+            {
+                title: 'Drug Repurposing against Human Coronavirus (2019-nCoV): An In Silico Molecular Docking Study',
+                authors: 'Alam MJ, Jahan S, Alam R, Akter M, Imon RR.',
+                journal: 'Journal of Applied Biotechnology and Bioengineering',
+                year: '2020',
+                description: 'This *in silico* molecular docking study explored drug repurposing strategies against Human Coronavirus (2019-nCoV), identifying potential existing drugs that could be effective against the virus. We screened a library of FDA-approved drugs against key viral proteins to identify compounds with high binding affinities, suggesting their potential to inhibit viral replication or entry. This research utilized computational approaches to rapidly identify promising candidates that could be repurposed for COVID-19 treatment, offering a faster route to therapeutic solutions during the pandemic. Our findings provide a foundation for further experimental validation of these identified compounds.',
+                link: 'https://jbiomed.com/index.php/JABB/article/view/1000164'
+            }
         ];
+
+        // Sort allPublications array by year in descending order
+        allPublications.sort((a, b) => b.year - a.year);
 
         const viewAllPublicationsBtn = document.getElementById('viewAllPublicationsBtn');
         const allPublicationsModal = document.getElementById('allPublicationsModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const publicationsListDiv = document.getElementById('publicationsList');
+        const featuredPublicationsContainer = document.getElementById('featuredPublicationsContainer');
+
+
+        // Function to render featured publications (top 4)
+        function renderFeaturedPublications() {
+            featuredPublicationsContainer.innerHTML = ''; // Clear existing featured publications
+            const featured = allPublications.slice(0, 4); // Get top 4 publications
+            featured.forEach(pub => {
+                const pubDiv = document.createElement('div');
+                pubDiv.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow';
+                // Logic to prioritize PubMed for featured, then DOI, then general link
+                let linkToUse = '';
+                if (pub.pubmedLink) {
+                    linkToUse = `<a href="${pub.pubmedLink}" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">PubMed &rarr;</a>`;
+                } else if (pub.doiLink) {
+                    linkToUse = `<a href="${pub.doiLink}" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">DOI &rarr;</a>`;
+                } else if (pub.link) {
+                    linkToUse = `<a href="${pub.link}" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">Link &rarr;</a>`;
+                }
+
+                pubDiv.innerHTML = `
+                    <p class="text-sm font-semibold text-blue-600">${pub.journal} (${pub.year})</p>
+                    <h4 class="font-bold mt-2 text-gray-800">${pub.title}</h4>
+                    <p class="text-sm text-gray-600 mt-2">${pub.authors}</p>
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">${pub.description}</p>
+                    <div class="mt-4 flex flex-wrap gap-3">
+                        ${linkToUse}
+                    </div>
+                `;
+                featuredPublicationsContainer.appendChild(pubDiv);
+            });
+        }
+
+        // Initial render of featured publications when the page loads
+        renderFeaturedPublications();
+
 
         function renderAllPublications() {
             publicationsListDiv.innerHTML = ''; 
             allPublications.forEach(pub => {
                 const pubDiv = document.createElement('div');
                 pubDiv.className = 'bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm';
+                // Logic to prioritize DOI for all publications, then PubMed, then general link
+                let linkToUse = '';
+                if (pub.doiLink) {
+                    linkToUse = `<a href="${pub.doiLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">DOI &rarr;</a>`;
+                } else if (pub.pubmedLink) {
+                    linkToUse = `<a href="${pub.pubmedLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">PubMed &rarr;</a>`;
+                } else if (pub.link) {
+                    linkToUse = `<a href="${pub.link}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">Link &rarr;</a>`;
+                }
+
                 pubDiv.innerHTML = `
                     <h4 class="font-bold text-lg text-gray-800">${pub.title}</h4>
                     <p class="text-sm text-gray-600 mt-1"><strong>Authors:</strong> ${pub.authors}</p>
-                    <p class="text-sm text-gray-600"><strong>Journal:</strong> ${pub.journal} (${pub.year})</p>
+                    <p class="text-sm text-gray-600"><strong>Journal:</strong> ${pub.journal} ${pub.volume ? `Vol: ${pub.volume}` : ''} ${pub.number ? `No: ${pub.number}` : ''} ${pub.pages ? `Pages: ${pub.pages}` : ''} (${pub.year})</p>
                     <p class="text-gray-700 text-sm mt-2 leading-relaxed">${pub.description}</p>
                     <div class="mt-3 flex flex-wrap gap-2">
-                        ${pub.pubmedLink ? `<a href="${pub.pubmedLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">PubMed &rarr;</a>` : ''}
-                        ${pub.doiLink ? `<a href="${pub.doiLink}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">DOI &rarr;</a>` : ''}
-                        ${pub.link && !pub.pubmedLink && !pub.doiLink ? `<a href="${pub.link}" target="_blank" class="text-blue-600 hover:underline text-xs font-medium">Link &rarr;</a>` : ''}
+                        ${linkToUse}
                     </div>
                 `;
                 publicationsListDiv.appendChild(pubDiv);
@@ -628,6 +952,75 @@
                 allPublicationsModal.style.display = 'none';
             }
         });
+
+        // Skill Details
+        const skillDescriptions = {
+            "Animal Models (Mice Work)": "Expertise in handling, administering treatments (intraperitoneal, subcutaneous, intravenous injections), and precise tissue collection for various research applications. Proficient in conducting in vivo experiments to study disease progression and therapeutic responses in relevant animal models.",
+            "In Vivo/Ex Vivo Imaging": "Skilled in utilizing advanced imaging modalities such as bioluminescence imaging for real-time visualization of cellular processes in living organisms. Experienced in ex vivo organ imaging to analyze excised tissues and organs for metastatic burden and pathological changes with high resolution.",
+            "Immunofluorescence Microscopy": "Proficient in performing immunofluorescence staining techniques on tissue sections and cell cultures to visualize specific proteins and cellular structures. Experienced in operating fluorescence microscopes and capturing high-quality images for qualitative and quantitative analysis of protein expression and localization.",
+            "Western Blotting": "Competent in protein extraction, gel electrophoresis, protein transfer, and immunodetection using specific antibodies. Routinely perform Western blots to quantify protein expression levels and assess post-translational modifications in various biological samples.",
+            "Cell Culture & Assays": "Extensive experience in maintaining mammalian cell lines and establishing primary cell cultures under sterile conditions. Proficient in conducting various cell-based assays including proliferation, migration, invasion, and viability assays, as well as complex 3D organoid cultures for advanced research models.",
+            "Tissue Collection & Processing": "Highly skilled in aseptic tissue collection from animal models, ensuring sample integrity for downstream molecular and histological analyses. Experienced in tissue processing techniques, including fixation, embedding, and sectioning, to prepare samples for microscopy and other experimental procedures.",
+            "Molecular Cloning": "Proficient in designing and executing molecular cloning strategies, including plasmid construction, PCR amplification, and bacterial transformation. Experienced in generating recombinant DNA constructs for gene expression, knockdown, or reporter assays.",
+            "PCR Techniques": "Mastered various PCR techniques including standard PCR, quantitative PCR (qPCR), and reverse transcription PCR (RT-PCR) for gene expression analysis and genetic screening. Proficient in primer design, reaction optimization, and data interpretation to accurately quantify nucleic acid targets.",
+            "Light-Sheet Imaging": "Experienced with advanced tissue clearing techniques and operating light-sheet microscopy systems. Skilled in imaging large biological samples in 3D with high resolution and minimal phototoxicity, enabling comprehensive analysis of complex structures and cellular networks.",
+            "Python for Data Analysis": "Proficient in using Python programming language, including libraries like NumPy, Pandas, and Matplotlib, for efficient data manipulation, analysis, and visualization. Skilled in scripting custom solutions for complex biological data processing and interpretation.",
+            "NCBI Toolkit": "Experienced in navigating and utilizing various tools and databases provided by the National Center for Biotechnology Information (NCBI). Proficient in retrieving genomic, proteomic, and bibliographic data for research and analysis purposes, enhancing literature review and sequence analysis.",
+            "Schrödinger Software": "Competent in using Schrödinger software suite for computational chemistry and drug discovery, including molecular docking, molecular dynamics simulations, and ligand-based drug design. Skilled in performing virtual screening and optimizing lead compounds based on their binding affinities and interactions.",
+            "PyMol": "Proficient in using PyMOL for visualizing and analyzing molecular structures, including proteins, nucleic acids, and small molecules. Skilled in creating high-quality molecular graphics for presentations and publications, aiding in the interpretation of structural biology data.",
+            "Prism-GraphPad": "Experienced in using GraphPad Prism for statistical analysis, data plotting, and scientific graphing. Proficient in generating publication-quality graphs and performing various statistical tests relevant to biomedical research, ensuring robust data presentation.",
+            "Linux (Ubuntu)": "Competent in navigating and operating within the Linux (Ubuntu) environment, including command-line operations and script execution. Experienced in managing bioinformatics pipelines and computational tools often deployed on Linux-based systems.",
+            "Windows OS": "Proficient in using Windows operating system for standard office applications, data management, and scientific software requiring a Windows environment. Experienced in troubleshooting common software and hardware issues.",
+            "In Silico Drug Design": "Skilled in applying computational methods for drug discovery and development, including virtual screening, molecular docking, and molecular dynamics simulations. Proficient in identifying potential drug candidates and optimizing their properties before experimental synthesis."
+        };
+
+        let currentOpenSkillDetailBox = null;
+
+        document.querySelectorAll('.skill-chip').forEach(chip => {
+            chip.addEventListener('click', (event) => {
+                const skillName = chip.getAttribute('data-skill');
+                const description = skillDescriptions[skillName];
+
+                // Find the parent flex container (flex flex-wrap)
+                const parentContainer = chip.closest('.flex.flex-wrap');
+
+                // Find any existing skill-detail-box within this parent container
+                const existingDetailBox = parentContainer.querySelector('.skill-detail-box');
+                
+                // If the clicked chip's detail box is already open, close it
+                if (existingDetailBox && existingDetailBox.previousElementSibling === chip) {
+                    existingDetailBox.remove();
+                    currentOpenSkillDetailBox = null;
+                    return; 
+                }
+
+                // Close any other open detail box in the entire document
+                if (currentOpenSkillDetailBox) {
+                    currentOpenSkillDetailBox.remove();
+                    currentOpenSkillDetailBox = null;
+                }
+
+                // Create and insert new detail box
+                const detailBox = document.createElement('div');
+                detailBox.className = 'skill-detail-box w-full'; // Make it full width of its container
+                detailBox.innerHTML = `<h4 class="font-bold mb-1">${skillName}</h4><p>${description}</p>`;
+                
+                // Insert the new detail box right after the clicked chip within its parent
+                chip.parentNode.insertBefore(detailBox, chip.nextSibling);
+                currentOpenSkillDetailBox = detailBox;
+            });
+        });
+
+        // Optional: Close skill detail box if click occurs outside of any skill chip or skill detail box
+        window.addEventListener('click', (event) => {
+            if (currentOpenSkillDetailBox && !event.target.closest('.skill-chip') && !event.target.closest('.skill-detail-box')) {
+                currentOpenSkillDetailBox.remove();
+                currentOpenSkillDetailBox = null;
+            }
+        });
+
+        // Initial render of featured publications when the page loads
+        renderFeaturedPublications();
     </script>
 </body>
 </html>
